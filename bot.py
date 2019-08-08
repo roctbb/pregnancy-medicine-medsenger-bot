@@ -118,7 +118,10 @@ def save_message():
 
     medicines = []
     for name in names:
-        variants = [' ' + name + ' ', ' ' + name + '.', ' ' + name + '?', ' ' + name + '!', ' ' + name + '(']
+        if len(name) < 4:
+            variants = [' ' + name + ' ', ' ' + name + '.', ' ' + name + '?', ' ' + name + '!', ' ' + name + '(']
+        else:
+            variants = [name]
         for variant in variants:
             if variant.lower() in (' ' + text + ' ').lower():
                 medicines.append(name)
