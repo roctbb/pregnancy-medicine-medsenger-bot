@@ -10,10 +10,10 @@ import threading
 import csv
 import json
 
-
 headers = {
     "Content-Type": "text/json"
 }
+
 
 def get_types(token):
     url = "https://int.drugscreening.ru/v1/concepts/types?access_token={}".format(token)
@@ -22,17 +22,21 @@ def get_types(token):
 
     return answer.json()
 
+
 def find_medicine(medicine_name, token):
-    url = "https://int.drugscreening.ru/v1/concepts/find?q={}&type={}&searchBy={}&access_token={}".format(medicine_name, "DrugName","Text", token)
+    url = "https://int.drugscreening.ru/v1/concepts/find?q={}&type={}&searchBy={}&access_token={}".format(medicine_name,
+                                                                                                          "DrugName",
+                                                                                                          "Text", token)
 
     answer = requests.get(url, headers=headers)
 
-    drug_list =  answer.json()
+    drug_list = answer.json()
 
     if not len(drug_list):
         return None
     else:
         return drug_list[0]
+
 
 def find_interaction(medicine, token):
     url = "https://int.drugscreening.ru/v1/screening?access_token={}".format(token)
@@ -51,6 +55,7 @@ def find_interaction(medicine, token):
     answer = requests.post(url, headers=headers, json=params)
 
     return len(answer.json()['PregnancyContraindications']['Items']) != 0
+
 
 with open("clear_meds.txt", 'r') as f:
     names = f.read().split('\n')
@@ -82,12 +87,14 @@ def settings():
 def index():
     return 'waiting for the thunder!'
 
+
 def send_warning(contract_id, names):
     data = {
         "contract_id": contract_id,
         "api_key": APP_KEY,
         "message": {
-            "text": "Внимание!\n\nСледующие лекарственные препараты могут быть противопоказаны для беременных: {}.".format(", ".join(names)),
+            "text": "Внимание!\n\nСледующие лекарственные препараты могут быть противопоказаны для беременных: {}.".format(
+                ", ".join(names)),
             "is_urgent": True,
         }
     }
@@ -96,7 +103,6 @@ def send_warning(contract_id, names):
         result = requests.post(MAIN_HOST + '/api/agents/message', json=data)
     except Exception as e:
         print('connection error', e)
-
 
 
 @app.route('/message', methods=['POST'])
@@ -119,7 +125,7 @@ def save_message():
     print(medicines)
     warning = False
     warning_names = []
-    for medicine in medicines:
+    for medicine in list(set(medicines)):
         found = find_medicine(medicine, element_token)
         if found and find_interaction(found, element_token):
             warning = True
