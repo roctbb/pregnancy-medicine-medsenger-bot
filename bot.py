@@ -135,4 +135,4 @@ def save_message():
 if not DEBUG:
     app.run(port='9092', host='0.0.0.0', ssl_context=SSL)
 else:
-    app.run(port='9092', host='0.0.0.0')
+    app.run(port='9092')
