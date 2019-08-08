@@ -114,7 +114,7 @@ def save_message():
     for name in names:
         variants = [' ' + name + ' ', ' ' + name + '.', ' ' + name + '?', ' ' + name + '!', ' ' + name + '(']
         for variant in variants:
-            if variant.lower() in text.lower():
+            if variant.lower() in (' ' + text + ' ').lower():
                 medicines.append(name)
     print(medicines)
     warning = False
